@@ -46,9 +46,6 @@ export default {
         });
       }
 
-      // Log for debugging
-      console.log('Decoded URL:', imageUrl);
-
       // Validate image URL  
       if (!validate_image_url(imageUrl)) {
         return new Response(JSON.stringify({
@@ -62,7 +59,7 @@ export default {
       // Check KV store for cached result
       const cachedResult = await env.IMAGE_ANALYSIS.get(imageUrl);
       if (cachedResult) {
-        console.log(imageUrl, 'CACHE HIT');
+        console.log('CACHE HIT:', cachedResult);
         const parsed = JSON.parse(cachedResult);
         if (parsed.error) {
           return new Response(JSON.stringify({ error: parsed.error }), {
@@ -163,7 +160,7 @@ export default {
       ]);
 
       const response = result.response.text();
-      console.log(response);
+ 
       // Parse the JSON response
       const parsedResponse = JSON.parse(response);
       if (!parsedResponse.alt_text || !parsedResponse.description) {
@@ -175,11 +172,12 @@ export default {
         expirationTtl: 31536000
       });
 
+      console.log('CACHE MISS:', parsedResponse);
       return new Response(JSON.stringify(parsedResponse), {
         headers: { 'Content-Type': 'application/json' }
       });
     } catch (e) {
-      console.error(e);
+      console.error('Error:', e);
       return new Response(JSON.stringify({ error: e.message }), {
         status: 500,
         headers: { 'Content-Type': 'application/json' }
