@@ -146,7 +146,7 @@ export default {
 
       const prompt = `Given this image, analyze and extract the relevant content. 
       Provide a very short alt text that describes the image in a single sentence with no period.
-      Also provide a detailed description that includes purpose, style, layout, all text, and any other relevant details.
+      Also provide a detailed description that includes purpose, style, layout, extracting ALL text, and any other relevant details.
       For diagrams, tables, or charts, include any text labels and their relative relationships.`;
 
       const result = await model.generateContent([
